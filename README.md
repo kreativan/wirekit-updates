@@ -6,7 +6,7 @@ This is main WireKit updates repo. To install updates just download the repo or 
 * Removed SeoMaestro
 * Handle meta in seting() and head() functions...
 ```
-*WireKit still supports SeoMaestro, but not default option any more. If you want to use new wirekit meta, you need to delete `_meta.php` file in templates root, and optionaly set meta defaults in _init.php `setting()`*.
+*WireKit still supports SeoMaestro, but not default option any more. If you want to use new wirekit meta, you need to delete `_meta.php` file in templates root, and optionaly set meta defaults in _init.php `setting()`. For more info look at the /templates/vendor/inc/meta.php file*. 
 ``` 
 // _init.php
 

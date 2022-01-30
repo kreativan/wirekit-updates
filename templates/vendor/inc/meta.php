@@ -11,15 +11,24 @@
  *  
  * # Defaults
  *  Set defaults in _init.php setting() function.
+ *  @example
+ *  setting([
+ *    "meta" => [
+ *      "title" => "My Title",
+ *      "description" => "My description...",
+ *      "image" => "/my_image.jpg"
+ *    ]
+ *  ]);
  * 
- *  # Primary
+ *  # Templates
  *  Set meta data in your template files in head() function. 
  *  This will have priority over defaults.
  *  @example
  *  head([
  *    "meta" => [
  *      "title" => "My Title",
- *      "description" => "My description..."
+ *      "description" => "My description...",
+ * "    "image" => "/my_image.jpg"
  *    ]
  *  ]);
  *  
