@@ -32,10 +32,11 @@
 
 $title = !empty($title) ? $title : $page->title;
 $description = !empty($description) ? $description : false;
+$url = !empty($url) ? $url : $page->httpUrl;
 $canonical = !empty($canonical) ? $canonical : $page->httpUrl;
 $image = !empty($image) ? $image : false;
 $generator = !empty($generator) ? $generator : false;
-
+$hreflang = (!empty($hreflang) && $hreflang != "/" && $hreflang !== "false") ? false : true;
 ?>
 
 <?php // Primary Meta Tags ?>
@@ -43,11 +44,13 @@ $generator = !empty($generator) ? $generator : false;
 <?php if($description) :?>
 <meta name="description" content="<?= $description ?>">
 <?php endif; ?>
+<?php if($canonical != "/" && $canonical != "false") :?>
 <link rel="canonical" href="<?= $canonical ?>">
+<?php endif;?>
 
 <?php // Open Graph / Facebook ?>
 <meta property="og:type" content="website">
-<meta property="og:url" content="<?= $page->httpUrl ?>">
+<meta property="og:url" content="<?= $url ?>">
 <meta property="og:title" content="<?= $title ?>">
 <?php if($description) :?>
 <meta property="og:description" content="<?= $description ?>">
@@ -58,8 +61,8 @@ $generator = !empty($generator) ? $generator : false;
 <?php endif;?>
 
 <?php // Twitter ?>
-<meta property="twitter:card" content="summary_large_image">
-<meta property="twitter:url" content="<?= $page->httpUrl ?>">
+<meta property="twitter:card" content="<?= $image ? "summary_large_image" : "summary" ?>">
+<meta property="twitter:url" content="<?= $url ?>">
 <meta property="twitter:title" content="<?= $title ?>">
 <?php if($description) :?>
 <meta property="twitter:description" content="<?= $description ?>">
@@ -70,6 +73,7 @@ $generator = !empty($generator) ? $generator : false;
 <?php endif; ?>
 
 <?php // hreflangs ;?>
+<?php if($hreflang && $page->name != "http404") :?>
 <?php if(isset($languages) && $languages->count) :?>
 <?php foreach($languages as $lang) :?>
 <?php if($lang->name == "default") : ?>
@@ -78,6 +82,7 @@ $generator = !empty($generator) ? $generator : false;
 <link rel="alternate" href="<?= $page->localHttpUrl($lang) ?>" hreflang="<?= $lang->name ?>">
 <?php endif;?>
 <?php endforeach; ?>
+<?php endif;?>
 <?php endif;?>
 
 <?php if($generator) : ?>
