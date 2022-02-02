@@ -6,4 +6,3 @@ This is main WireKit updates repo. To install updates just download the repo or 
 
 * `v0.0.3-alpha` WireKit and MenuManager updates, vendor admin page`
 * `v0.0.2-alpha` WireKit UI prefix chnage from `wk-` to `w-`. Removed SeoMaestro. Handle meta in seting() and head() functions. Versioning change
-```
