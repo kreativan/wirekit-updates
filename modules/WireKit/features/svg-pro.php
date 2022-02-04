@@ -1,17 +1,17 @@
 <?php namespace ProcessWire; 
 head([
   "js" => [$modules->get("WireKit")->module_url."/listjs/dist/list.min.js"],
-  "js" => [$modules->get("WireKit")->module_url."/listjs/dist/list.min.js"],
   "meta" => [
     "title" => "WireKit: SVG Icons",
   ]
 ]);
 
 $folders = [];
+$folders_ass = array_filter(glob($config->paths->ass."svg/*"), 'is_dir');
 $folders_lib = array_filter(glob($config->paths->lib."svg/*"), 'is_dir');
-foreach($folders_lib as $f) $folders[] = basename($f);
-$folders = array_unique($folders);
+$folders_all = array_merge($folders_ass, $folders_lib);
 
+$vendor_icons = glob($config->paths->lib . "svg/*.svg");
 $custom_icons = glob($config->paths->ass . "svg/*.svg");
 ?>
 
@@ -30,6 +30,7 @@ $custom_icons = glob($config->paths->ass . "svg/*.svg");
 
   <ul class="list uk-grid" uk-grid>
 
+    <!-- Custom Icons -->
     <?php if(count($custom_icons) > 0) : ?>
       <li class="uk-width-1-1">
         <h3 class="uk-heading-divider">Custom</h3>
@@ -50,28 +51,50 @@ $custom_icons = glob($config->paths->ass . "svg/*.svg");
       <?php endforeach; ?>
     <?php endif;?>
 
-    <?php foreach($folders as $folder) :?>
+    <!-- Vendor Icons -->
+    <?php if(count($vendor_icons) > 0) : ?>
+      <li class="uk-width-1-1">
+        <h3 class="uk-heading-divider">Vendor</h3>
+      </li>
+      <?php foreach($vendor_icons as $svg) : ?>
+      <li class="uk-width-auto uk-grid-margin uk-text-center">
+        <?php
+          $svg = str_replace(".svg", "", basename($svg));
+          svg($svg, [
+            "size" => "32px",
+            "color" => "#444"
+          ]);
+        ?>
+        <div class="name uk-text-small">
+          <?= $svg ?>
+        </div>
+      </li>
+      <?php endforeach; ?>
+    <?php endif;?>
+
+     <!-- Folders -->
+    <?php foreach($folders_all as $folder) :?>
 
       <?php
-        $svg_files = glob($config->paths->lib."svg/$folder/*.svg");
-        $svg_root = glob($config->paths->templates . "assets/svg/$folder/*.svg");
+        $svg_files = glob("$folder/*.svg");
       ?>
 
       <li class="uk-width-1-1 uk-grid-margin">
-        <h3 class="uk-heading-divider"><?= ucfirst($folder) ?></h3>
+        <h3 class="uk-heading-divider"><?= ucfirst(basename($folder)) ?></h3>
       </li>
 
       <?php foreach($svg_files as $svg) : ?>
       <li class="uk-width-auto uk-grid-margin uk-text-center">
         <?php
           $svg = str_replace(".svg", "", basename($svg));
-          svg("{$folder}/{$svg}", [
+          $svg = basename($folder) ."/".$svg;
+          svg($svg, [
             "size" => "32px",
             "color" => "#444"
           ]);
         ?>
         <div class="name uk-text-small">
-          <?= "$folder/" ?><span><?= $svg ?></span>
+          <span><?= $svg ?></span>
         </div>
       </li>
       <?php endforeach;?>

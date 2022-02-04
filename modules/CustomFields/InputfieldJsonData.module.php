@@ -65,6 +65,7 @@ class InputfieldJsonData extends InputfieldTextarea {
             $this_value = $this_value == "" && !empty($f->default) ? $f->default : "";
 
             $desc = isset($f->desc) ? $f->desc : "";
+            $code = isset($f->code) ? $f->code : false;
             $required = isset($f->required) ? $f->required : "";
 
             $out .= "<div class='uk-padding-small uk-background-muted'>";
@@ -79,6 +80,8 @@ class InputfieldJsonData extends InputfieldTextarea {
             } elseif($f->type == "select") {
               $out .= $this->select($f, $this_json);
             }
+
+            if($code) $out .= "<code>$code</code>";
             
             $out .= "</div>";
 

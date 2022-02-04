@@ -36,7 +36,7 @@ include("_tabs.php");
           $link_type = $item->link_type->name;
 
           $link = "-";
-          if(($link_type == 'page' || $link_type == "page-ajax") && !empty($item->select_page)) {
+          if(($link_type == 'page' || $link_type == "page-htmx") && !empty($item->select_page)) {
             $page_link = $this->pages->get("id={$item->select_page}");
             if($page_link->parent->id == "1") {
               $link =  "/{$page_link->name}/";

@@ -30,7 +30,7 @@ function isMenuActive($item) {
 }
 
 // Get current menu item css class
-function menuItemClass($item, $prefix = "uk-") { 
+function menuItemClass($item, $prefix = "") { 
   $class = isset($item["is_subitem"]) && $item["is_subitem"] ? "submenu-item" : "menu-item";
   if(isMenuActive($item)) $class .= " {$prefix}active";
   if(isset($item["is_parent"]) && $item["is_parent"]) $class .= " {$prefix}parent";

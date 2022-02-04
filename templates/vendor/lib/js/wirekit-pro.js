@@ -15,6 +15,21 @@ var wirekit = (function () {
 	// Create the methods object
 	var methods = {};
 
+  /* =========================================================== 
+    Forms
+  =========================================================== */
+
+  /**
+   * Get fields from specified form
+   * @param {*} form_id 
+   * @returns 
+   */
+  methods.formFields = function(form_id) {
+    const form = document.getElementById(form_id);
+    const fields = form.querySelectorAll("input, select, textarea");
+    return fields;
+  }
+
   /**
    * Create FormData for use in fetch requests 
    * @param {string} form_id 
@@ -22,9 +37,8 @@ var wirekit = (function () {
    * @returns {object}
    */
   methods.formData = function(form_id, data = null) {
-    let form = document.getElementById(form_id);
+    let fields = this.formFields(form_id);
     let formData = new FormData();
-    let fields = form.querySelectorAll("input, select, textarea");
     if (data) {
       for (const item in data) formData.append(item, data[item]);
     }
@@ -41,10 +55,10 @@ var wirekit = (function () {
    * @param {string} form_id css id 
    */
   methods.formClear = function(form_id) {
-    let form = document.getElementById(form_id);
-    let fields = form.querySelectorAll("input, select, textarea");
+    let fields = this.formFields(form_id);
     fields.forEach((e) => {
-      e.value = "";
+      let type = e.getAttribute("type");
+      if(type !== "submit" && type !== "hidden" && type !== "button") e.value = "";
     });
   }
 
@@ -54,23 +68,57 @@ var wirekit = (function () {
    * @param {string} form_id 
    */
   methods.formSubmit = async function(form_id) {
+
     event.preventDefault();
-    let form = document.getElementById(form_id);
-    let spinner = form.querySelector(".uk-spinner");
-    let span = form.querySelector(".uk-button > span");
-    if (span) span.classList.add("uk-hidden");
-    if (spinner) spinner.classList.remove("uk-hidden");
-    let ajaxUrl = form.getAttribute("action");
-    let formData = wirekit.formData(form_id);
+
+    const form = document.getElementById(form_id);
+    const fields = this.formFields(form_id);
+
+    const indicator = form.querySelector(".ajax-indicator");
+    if (indicator) indicator.classList.remove("uk-hidden");
+
+    const ajaxUrl = form.getAttribute("action");
+    const formMethod = form.getAttribute("method");
+    let formData = this.formData(form_id);
+
     let request = await fetch(ajaxUrl, {
-      method: 'POST',
+      method: formMethod,
       cache: 'no-cache',
       body: formData
     });
+
     let response = await request.json();
     if(cms.debug) console.log(response);
-    if(response.reset_form) wirekit.formClear(form_id);
-    if (response.modal) {
+
+    // if reset-form clear form fields
+    if(response.reset_form) this.formClear(form_id);
+
+    // clear error marks
+    fields.forEach(e => {
+      e.classList.remove("error");
+    });
+
+    // mark error fields
+    if(response.error_fields && response.error_fields.length > 0) {
+      response.error_fields.forEach(e => {
+        let field = form.querySelector(`[name='${e}']`);
+        field.classList.add("error");
+      });
+    }
+
+    //
+    // response errors-modal-notification
+    //
+    if(response.errors && response.errors.length > 0) {
+      response.errors.forEach(error => {
+        UIkit.notification({
+          message: error,
+          status: 'danger',
+          pos: 'top-center',
+          timeout: 3000
+        });
+      }); 
+    } else if (response.modal) {
       UIkit.modal.alert(response.modal).then(function () {
         if(response.redirect) window.location.href = response.redirect;
       });
@@ -84,9 +132,17 @@ var wirekit = (function () {
     } else if (response.redirect) {
       window.location.href = response.redirect;
     }
-    if (spinner) span.classList.remove("uk-hidden");
-    if (spinner) spinner.classList.add("uk-hidden");
+
+    //
+    // hide indicator
+    //
+    if (indicator) indicator.classList.add("uk-hidden");
+
   }
+
+  /* =========================================================== 
+    Ajax and UI
+  =========================================================== */
 
   /**
    * Ajax Request on given URl
@@ -134,6 +190,10 @@ var wirekit = (function () {
       }); 
     }
   }
+
+  /* =========================================================== 
+    HTMX
+  =========================================================== */
 
   /**
    *  Function to run along with htmx
