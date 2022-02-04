@@ -21,7 +21,7 @@ class WireKitHelper extends WireData implements Module {
       'summary' => 'WireKit Helper module...',
       'icon' => 'code-fork',
       'author' => "Ivan Milincic",
-      "href" => "https://kreativan.dev",
+      "href" => "https://wirekit.dev",
       'singular' => true,
       'autoload' => false
     );

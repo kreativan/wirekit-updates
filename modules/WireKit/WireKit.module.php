@@ -14,7 +14,7 @@ class WireKit extends WireData implements Module {
       'summary' => 'Main WireKit module...',
       'icon' => 'codepen',
       'author' => "Ivan Milincic",
-      "href" => "https://kreativan.dev",
+      "href" => "https://wirekit.dev",
       'singular' => true,
       'autoload' => true
     );
