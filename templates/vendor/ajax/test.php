@@ -10,6 +10,7 @@ $response = [
   "status" => "success",
   "notification" => "Ajax request was ok!",
   "GET" => $_GET,
+  "POST" => $_POST,
 ];
 
 // JSON Reponse

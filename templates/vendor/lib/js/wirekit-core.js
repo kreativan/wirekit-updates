@@ -1,8 +1,9 @@
 /**
  *  wirekit-core
- *
+ *  @method formFields
  *  @method formData - Collect data from form inputs
  *  @method formClear - Clear data from the form inputs
+ *  @method formSetVals
  *  @method mobileMenu - init mobile menu
  *  @method htmx - htmx related helpers
  */
@@ -58,6 +59,21 @@
       let type = e.getAttribute("type");
       if(type !== "submit" && type !== "hidden" && type !== "button") e.value = "";
     });
+  }
+
+  /**
+   * Set form field values
+   * @param {string} form_id 
+   * @param {object} obj {id: '123', title: 'My Title'...} 
+   */
+   methods.formSetVals = function(form_id, obj) {
+    const form = document.getElementById(form_id);
+    for (const property in obj) {
+      let name = property;
+      let value = obj[property]
+      let input = form.querySelector(`[name='${name}']`);
+      input.value = value;
+    }
   }
 
   /* =========================================================== 

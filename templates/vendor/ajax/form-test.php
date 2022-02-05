@@ -7,12 +7,13 @@ if($input->post->something) {
 }
 
 $response = [
-  "status" => "success",
+  "status" => "success", // used also for notification color
   "reset_form" => false, // clear-reset form input values
   "notification" => "Notification: Ajax form submit was ok!", // if no modal, notification will be used
   "modal" => "<h3>Modal Response</h3><p>Ajax form submit was successful</p>", // modal has priority
   "redirect" => "/", // if used with modal, will redirect after modal confirm... 
   "errors" => [], // array of errors (strings), will trigger notification for each
+  "error_fields" => [], // array of names for invalid fields
   "post" => $_POST,
 ];
 

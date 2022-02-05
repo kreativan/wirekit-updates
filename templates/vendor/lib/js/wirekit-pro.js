@@ -1,8 +1,10 @@
 /**
  *  wirekit 
- *
+ *  
+ *  @method formFields
  *  @method formData - Collect data from form inputs
  *  @method formClear - Clear data from the form inputs
+ *  @method formSetVals
  *  @method formSubmit - submit forms using wirekit.formSubmit("form_css_id")
  *  @method ajaxReq - send fetch request to provided /ajax/* url
  *  @method mobileMenu - init mobile menu offcanvas
@@ -60,6 +62,21 @@ var wirekit = (function () {
       let type = e.getAttribute("type");
       if(type !== "submit" && type !== "hidden" && type !== "button") e.value = "";
     });
+  }
+
+  /**
+   * Set form field values
+   * @param {string} form_id 
+   * @param {object} obj {id: '123', title: 'My Title'...} 
+   */
+   methods.formSetVals = function(form_id, obj) {
+    const form = document.getElementById(form_id);
+    for (const property in obj) {
+      let name = property;
+      let value = obj[property]
+      let input = form.querySelector(`[name='${name}']`);
+      input.value = value;
+    }
   }
 
   /**
@@ -149,10 +166,18 @@ var wirekit = (function () {
    * send ajax request on given url and
    * trigger notification/modal if avalable
    * @param {string} url 
+   * @param {object} data {key: 'value', key2: 'value2' ...}
    */
-  methods.ajaxReq = async function(url) {
+  methods.ajaxReq = async function(url, data) {
     event.preventDefault();
-    let request = await fetch(url);
+    let options = "";
+    console.log(data);
+    if (data) {
+      let formData = new FormData();
+      for (const item in data) formData.append(item, data[item]);
+      options = {method: 'POST', cache: 'no-cache', body: formData}
+    }
+    let request = await fetch(url, options);
     let response = await request.json();
     if(cms.debug) console.log(response);
     if (response.modal) {
